@@ -54,6 +54,15 @@ pnpm-debug.log*
 # ── Supabase ─────────────────────────────────────────────────
 # Admin credentials — never commit
 supabase/assign_admin.sql
+
+# ── Large media files — served from Supabase Storage in production ──
+# These are local fallbacks only; audio is fetched from Supabase Storage URLs
+public/RECORDINGS/*.mp3
+public/RECORDINGS/*.wav
+public/RECORDINGS/*.m4a
+public/RECORDINGS/COMPRESSED/
+
+# ── Package manager lock files (keep only one) ───────────────
 # Uncomment the one you DON'T use:
 # package-lock.json
 # yarn.lock
