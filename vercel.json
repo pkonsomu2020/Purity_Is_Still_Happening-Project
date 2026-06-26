@@ -14,13 +14,23 @@
       ]
     },
     {
-      "source": "/(.*\\.(png|jpg|jpeg|gif|webp|svg|ico))",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=86400" }
-      ]
+      "source": "/(.*).png",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }]
     },
     {
-      "source": "/(.*\\.(mp3|wav|m4a|ogg))",
+      "source": "/(.*).jpg",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }]
+    },
+    {
+      "source": "/(.*).jpeg",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }]
+    },
+    {
+      "source": "/(.*).webp",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }]
+    },
+    {
+      "source": "/(.*).mp3",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=86400" },
         { "key": "Accept-Ranges", "value": "bytes" }
