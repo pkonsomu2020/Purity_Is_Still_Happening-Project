@@ -1,0 +1,121 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Design system definition.
+ *
+ * The @theme inline block maps CSS custom properties to Tailwind utility
+ * classes (e.g. --color-primary -> bg-primary, text-primary).
+ *
+ * The :root and .dark blocks define the actual color values using oklch.
+ * All colors MUST use oklch format.
+ *
+ * To add a new semantic color:
+ * 1. Add the variable to :root (light value) and .dark (dark value)
+ * 2. Register it in @theme inline as --color-<name>: var(--<name>)
+ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+:root {
+  --radius: 0.625rem;
+
+  /* PISH brand palette */
+  --pish-navy: oklch(0.32 0.06 250);
+  --pish-teal: oklch(0.62 0.06 220);
+  --pish-gold: oklch(0.77 0.09 75);
+
+  --background: oklch(0.99 0.005 80);
+  --foreground: var(--pish-navy);
+  --card: oklch(1 0 0);
+  --card-foreground: var(--pish-navy);
+  --popover: oklch(1 0 0);
+  --popover-foreground: var(--pish-navy);
+  --primary: var(--pish-navy);
+  --primary-foreground: oklch(0.99 0.005 80);
+  --secondary: var(--pish-teal);
+  --secondary-foreground: oklch(0.99 0.005 80);
+  --muted: oklch(0.95 0.01 80);
+  --muted-foreground: oklch(0.45 0.03 250);
+  --accent: var(--pish-gold);
+  --accent-foreground: var(--pish-navy);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.99 0.005 80);
+  --border: oklch(0.9 0.015 240);
+  --input: oklch(0.92 0.012 240);
+  --ring: var(--pish-teal);
+  --chart-1: var(--pish-navy);
+  --chart-2: var(--pish-teal);
+  --chart-3: var(--pish-gold);
+  --chart-4: oklch(0.7 0.05 200);
+  --chart-5: oklch(0.6 0.08 60);
+  --sidebar: var(--pish-navy);
+  --sidebar-foreground: oklch(0.99 0.005 80);
+  --sidebar-primary: var(--pish-gold);
+  --sidebar-primary-foreground: var(--pish-navy);
+  --sidebar-accent: oklch(0.4 0.06 245);
+  --sidebar-accent-foreground: oklch(0.99 0.005 80);
+  --sidebar-border: oklch(0.4 0.05 245);
+  --sidebar-ring: var(--pish-gold);
+
+  --font-sans: "Montserrat", system-ui, -apple-system, sans-serif;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html, body {
+    font-family: var(--font-sans);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  }
+}

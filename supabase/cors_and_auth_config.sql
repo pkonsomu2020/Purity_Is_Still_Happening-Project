@@ -1,0 +1,29 @@
+-- ============================================================
+-- PISH — Supabase Auth & CORS Production Configuration
+-- Run this in: Supabase Dashboard → SQL Editor → New Query
+-- Also apply the URL settings manually in the Dashboard (see below)
+-- ============================================================
+
+-- ── MANUAL STEPS IN SUPABASE DASHBOARD ──────────────────────
+--
+-- 1. Authentication → URL Configuration:
+--    Site URL:          https://pish-youth.vercel.app
+--    Redirect URLs (add all of these):
+--      https://pish-youth.vercel.app/**
+--      https://pish-admin.vercel.app/**
+--      http://localhost:5173/**
+--      http://localhost:8080/**
+--
+-- 2. Storage → Settings → Allowed CORS origins (add all):
+--      https://pish-youth.vercel.app
+--      https://pish-admin.vercel.app
+--      http://localhost:5173
+--      http://localhost:8080
+--
+-- 3. If you connect a custom domain later, add it to both lists above.
+--    Example: https://pishyouth.org and https://admin.pishyouth.org
+--
+-- ── NOTE ────────────────────────────────────────────────────
+-- Replace "pish-youth" and "pish-admin" with your actual
+-- Vercel project names once deployed.
+-- ============================================================
