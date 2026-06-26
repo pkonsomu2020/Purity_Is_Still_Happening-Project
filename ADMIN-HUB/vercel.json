@@ -1,11 +1,7 @@
 {
   "buildCommand": "npm run build",
-  "outputDirectory": "dist/client",
   "installCommand": "npm install",
-  "framework": "vite",
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
-  ],
+  "outputDirectory": ".vercel/output",
   "headers": [
     {
       "source": "/assets/(.*)",
@@ -18,15 +14,7 @@
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }]
     },
     {
-      "source": "/(.*).jpg",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }]
-    },
-    {
       "source": "/(.*).jpeg",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }]
-    },
-    {
-      "source": "/(.*).webp",
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }]
     }
   ]

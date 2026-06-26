@@ -20,6 +20,9 @@ dist-ssr/
 .tanstack/**
 *.local
 
+# ── Vercel build output ───────────────────────────────────────
+.vercel/
+
 # ── Wrangler / Cloudflare ─────────────────────────────────────
 .wrangler/
 .dev.vars
