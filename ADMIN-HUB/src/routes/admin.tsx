@@ -55,6 +55,58 @@ async function uploadFile(
   return data.publicUrl;
 }
 
+function validateAudioFile(file: File): Promise<{ valid: boolean; reason?: string }> {
+  return new Promise((resolve) => {
+    const ext = file.name.split(".").pop()?.toLowerCase();
+    const allowedExts = ["mp3", "wav", "m4a", "mp4", "aac", "ogg", "webm"];
+    if (!ext || !allowedExts.includes(ext)) {
+      resolve({
+        valid: false,
+        reason: `Unsupported file extension (.${ext || "none"}). Please use a standard audio format (MP3, WAV, M4A, AAC, OGG, or WebM).`,
+      });
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = (e) => {
+      if (!e.target?.result) {
+        resolve({ valid: true });
+        return;
+      }
+      const bytes = new Uint8Array(e.target.result as ArrayBuffer);
+      
+      // Check MPEG Program Stream / MPEG System stream (0x00 0x00 0x01 0xBA or 0x00 0x00 0x01 0xB3)
+      if (bytes[0] === 0x00 && bytes[1] === 0x00 && bytes[2] === 0x01 && (bytes[3] === 0xba || bytes[3] === 0xb3)) {
+        resolve({
+          valid: false,
+          reason: "This file is an MPEG video/system stream (often a renamed video file). Modern web browsers cannot play this format directly in an audio player. Please convert it to a standard audio file (like MP3, M4A, or WAV) before uploading.",
+        });
+        return;
+      }
+
+      // Check MP4/M4A ftyp box signature at offset 4
+      const isMP4 = bytes[4] === 0x66 && bytes[5] === 0x74 && bytes[6] === 0x79 && bytes[7] === 0x70; // 'ftyp'
+      const isMP3 = (bytes[0] === 0x49 && bytes[1] === 0x44 && bytes[2] === 0x33) || // 'ID3'
+                    (bytes[0] === 0xff && (bytes[1] & 0xe0) === 0xe0);               // Frame sync
+      const isRIFF = bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x46; // 'RIFF'
+      const isWAV = isRIFF && bytes[8] === 0x57 && bytes[9] === 0x41 && bytes[10] === 0x56 && bytes[11] === 0x45; // 'WAVE'
+      const isOGG = bytes[0] === 0x4f && bytes[1] === 0x67 && bytes[2] === 0x67 && bytes[3] === 0x53; // 'OggS'
+      const isEBML = bytes[0] === 0x1a && bytes[1] === 0x45 && bytes[2] === 0xdf && bytes[3] === 0xa3; // WebM
+
+      if (isMP3 || isWAV || isOGG || isEBML || isMP4) {
+        resolve({ valid: true });
+      } else {
+        resolve({ valid: true });
+      }
+    };
+    reader.onerror = () => {
+      resolve({ valid: true });
+    };
+    reader.readAsArrayBuffer(file.slice(0, 12));
+  });
+}
+
+
 // ─── Data hooks ───────────────────────────────────────────────────────────────
 
 function usePastSessions() {
@@ -269,7 +321,19 @@ function PastForm() {
               <Music className="h-4 w-4 text-muted-foreground" /> Audio Recording
             </Label>
             <Input type="file" accept="audio/*,video/*"
-              onChange={(e) => setRec(e.target.files?.[0] ?? null)} />
+              onChange={async (e) => {
+                const file = e.target.files?.[0] ?? null;
+                if (file) {
+                  const check = await validateAudioFile(file);
+                  if (!check.valid) {
+                    toast.error(check.reason);
+                    e.target.value = "";
+                    setRec(null);
+                    return;
+                  }
+                }
+                setRec(file);
+              }} />
             <p className="text-xs text-muted-foreground">MP3, WAV, M4A, MP4</p>
           </div>
           <div className="md:col-span-2">
@@ -433,7 +497,19 @@ function PromoteDialog({
               <Music className="h-4 w-4 text-muted-foreground" /> Audio Recording
             </Label>
             <Input type="file" accept="audio/*,video/*"
-              onChange={(e) => setRec(e.target.files?.[0] ?? null)} />
+              onChange={async (e) => {
+                const file = e.target.files?.[0] ?? null;
+                if (file) {
+                  const check = await validateAudioFile(file);
+                  if (!check.valid) {
+                    toast.error(check.reason);
+                    e.target.value = "";
+                    setRec(null);
+                    return;
+                  }
+                }
+                setRec(file);
+              }} />
             <p className="text-xs text-muted-foreground">MP3, WAV, M4A, MP4</p>
           </div>
           {!session.poster_url && (
@@ -532,7 +608,19 @@ function EditPastDialog({
             <Label className="flex items-center gap-1.5">
               <Music className="h-4 w-4 text-muted-foreground" /> Replace Recording
             </Label>
-            <Input type="file" accept="audio/*,video/*" onChange={(e) => setRec(e.target.files?.[0] ?? null)} />
+            <Input type="file" accept="audio/*,video/*" onChange={async (e) => {
+              const file = e.target.files?.[0] ?? null;
+              if (file) {
+                const check = await validateAudioFile(file);
+                if (!check.valid) {
+                  toast.error(check.reason);
+                  e.target.value = "";
+                  setRec(null);
+                  return;
+                }
+              }
+              setRec(file);
+            }} />
             {session.recording_url && !recording && (
               <p className="text-xs text-muted-foreground">Current recording kept if empty</p>
             )}
