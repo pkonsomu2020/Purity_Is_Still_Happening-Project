@@ -56,74 +56,6 @@ function WaveformBars({ playing, color = "#D4A574" }: { playing: boolean; color?
 // Uses the native browser audio element styled to match the PISH design.
 // The download button triggers a real file download.
 
-function AudioPlayer({ src, title }: { src: string; title: string }) {
-  const downloadName = title.replace(/[^a-z0-9 \-_]/gi, "").trim() + ".mp3";
-  const [playbackError, setPlaybackError] = useState(false);
-
-  const handleDownload = async () => {
-    try {
-      const res  = await fetch(src);
-      const blob = await res.blob();
-      const url  = URL.createObjectURL(blob);
-      const a    = document.createElement("a");
-      a.href     = url;
-      a.download = downloadName;
-      a.click();
-      URL.revokeObjectURL(url);
-    } catch {
-      // fallback — open in new tab
-      window.open(src, "_blank");
-    }
-  };
-
-  return (
-    <div className="mt-4">
-      {playbackError ? (
-        <div className="flex flex-col gap-2.5 p-3.5 rounded-xl bg-amber-50/50 border border-amber-200/50">
-          <p className="text-xs font-semibold text-amber-800" style={{ fontFamily: MONO }}>
-            Browser playback is not supported for this recording format.
-          </p>
-          <button
-            onClick={handleDownload}
-            className="w-full h-10 rounded-xl flex items-center justify-center gap-2 text-sm font-semibold transition-all hover:bg-[#1E3A5F] hover:text-white"
-            style={{
-              background: "rgba(30,58,95,0.08)",
-              color: "#1E3A5F",
-              fontFamily: MONO,
-            }}
-          >
-            <Download size={15} /> Download Recording
-          </button>
-        </div>
-      ) : (
-        <div className="flex items-center gap-3">
-          {/* Native audio — pill shaped */}
-          <audio
-            controls
-            src={src}
-            onError={() => setPlaybackError(true)}
-            className="flex-1 h-11"
-            style={{
-              borderRadius: "999px",
-              background: "#f3f4f6",
-              outline: "none",
-              minWidth: 0,
-            }}
-          />
-          {/* Download button */}
-          <button
-            onClick={handleDownload}
-            title={`Download "${title}"`}
-            className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110"
-            style={{ background: "rgba(30,58,95,0.08)", color: "#1E3A5F" }}
-          >
-            <Download size={16} />
-          </button>
-        </div>
-      )}
-    </div>
-  );
-}
 
 // ─── RecordingsPage ───────────────────────────────────────────────────────────
 
@@ -336,15 +268,32 @@ export default function RecordingsPage({ onBack }: { onBack: () => void }) {
                       {rec.description}
                     </p>
                   )}
-                  {rec.recording_url
-                    ? <AudioPlayer src={rec.recording_url} title={rec.title} />
-                    : (
-                      <div className="mt-4 p-4 rounded-xl text-center text-xs"
-                        style={{ background: "rgba(30,58,95,0.04)", color: "#9CA3AF", fontFamily: MONO }}>
-                        Recording coming soon
-                      </div>
-                    )
-                  }
+                  {rec.recording_url ? (
+                    <button
+                      onClick={() => {
+                        const downloadName = rec.title.replace(/[^a-z0-9 \-_]/gi, "").trim() + ".mp3";
+                        const downloadUrl = `${rec.recording_url}?download=${encodeURIComponent(downloadName)}`;
+                        const a = document.createElement("a");
+                        a.href = downloadUrl;
+                        a.click();
+                      }}
+                      className="mt-4 w-full h-11 rounded-xl flex items-center justify-center gap-2 text-sm font-semibold transition-all hover:scale-[1.02] shadow-sm active:scale-[0.98]"
+                      style={{
+                        background: "#1E3A5F",
+                        color: "white",
+                        fontFamily: MONO,
+                        border: "1px solid rgba(212,165,116,0.2)",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <Download size={15} style={{ color: "#D4A574" }} /> Download Recording
+                    </button>
+                  ) : (
+                    <div className="mt-4 p-4 rounded-xl text-center text-xs"
+                      style={{ background: "rgba(30,58,95,0.04)", color: "#9CA3AF", fontFamily: MONO }}>
+                      Recording coming soon
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
